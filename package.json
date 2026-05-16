@@ -1,0 +1,18 @@
+{
+  "name": "stage3_comment-master-rewrite",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^25.8.0",
+    "@types/readline-sync": "^1.4.8",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "readline-sync": "^1.4.10"
+  },
+  "scripts": {
+    "step1-cli": "tsc && node build/step1/StoryAssistant.js"
+  },
+  "author": ""
+}
