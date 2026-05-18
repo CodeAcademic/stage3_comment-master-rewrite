@@ -12,7 +12,8 @@
     "readline-sync": "^1.4.10"
   },
   "scripts": {
-    "step1-cli": "tsc && node build/step1/StoryAssistant.js"
+    "step1-cli": "tsc && node build/step1/StoryAssistant.js",
+    "step2-cli": "tsc && node build/step2/StoryAssistant.js"
   },
   "author": ""
 }
