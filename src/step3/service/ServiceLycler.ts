@@ -6,9 +6,9 @@ import PostingService from "./PostingService";
 
 interface ServiceLycler {
     createClubService(): ClubService;
-    createClubService(): MemberService;
-    createClubService(): BoardService;
-    createClubService(): PostingService;
+    createMemberService(): MemberService;
+    createBoardService(): BoardService;
+    createPostingService(): PostingService;
 }
 
 export default ServiceLycler;
