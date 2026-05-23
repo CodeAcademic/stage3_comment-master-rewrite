@@ -13,7 +13,8 @@
   },
   "scripts": {
     "step1-cli": "tsc && node build/step1/StoryAssistant.js",
-    "step2-cli": "tsc && node build/step2/StoryAssistant.js"
+    "step2-cli": "tsc && node build/step2/StoryAssistant.js",
+    "step3-cli": "tsc && node build/step3/StoryAssistant.js"
   },
   "author": ""
 }
