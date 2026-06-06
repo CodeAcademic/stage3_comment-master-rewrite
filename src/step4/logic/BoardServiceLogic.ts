@@ -110,3 +110,5 @@ class BoardServiceLogic implements BoardService {
         this.boardStore.delete(boardId);
     }
 }
+
+export default BoardServiceLogic;

@@ -1,120 +1,77 @@
-import ClubStoreMapLycler from "../da.map/ClubStoreMapLycler";
 import BoardService from "../service/BoardService";
-import BoardDto from "../service/dto/BoardDto";
-import BoardStore from "../store/BoardStore";
-import ClubStore from "../store/ClubStore";
+import ClubService from "../service/ClubService";
+import MemberService from "../service/MemberService";
+import PostingService from "../service/PostingService";
+import ServiceLycler from "../service/ServiceLycler";
+import BoardServiceLogic from "./BoardServiceLogic";
+import ClubServiceLogic from "./ClubServiceLogic";
+import MemberServiceLogic from "./MemberServiceLogic";
+import PostingServiceLogic from "./PostingServiceLogic";
+import CommentService from "../service/CommentService";
+import CommentServiceLogic from "./CommentServiceLogic";
 
 
-class BoardServiceLogic implements BoardService {
+class ServiceLogicLycler implements ServiceLycler {
 
-    boardStore: BoardStore;
-    clubStore: ClubStore;
+    private static lycler: ServiceLycler;
 
-    constructor() {
+    clubService: ClubService | null;
+    memberService: MemberService | null;
+    boardService: BoardService | null;
+    postingService: PostingService | null;
+    commentService: CommentService | null;
 
-        this.boardStore = ClubStoreMapLycler.getInstance().requestBoardStore();
-        this.clubStore = ClubStoreMapLycler.getInstance().requestClubStore();
+    private constructor() {
+
+        this.clubService = null;
+        this.memberService = null;
+        this.boardService = null;
+        this.postingService = null;
+        this.commentService = null;
     }
 
-    register(boardDto: BoardDto): string {
-        const boardId = boardDto.clubId;
-        const targetBoard = this.boardStore.retrieve(boardId);
-
-        if (targetBoard) {
-            throw new Error('Board already exists in the club --> ' + targetBoard.name);
+    static shareInstance(): ServiceLycler {
+        if (!this.lycler) {
+            this.lycler = new ServiceLogicLycler();
         }
-
-        const clubFound = this.clubStore.retrieve(boardId);
-
-        if (!clubFound) {
-            throw new Error('No such club with id: ' + boardId);
-        }
-
-        const adminEmail = clubFound.getMembershipBy(boardDto.adminEmail);
-
-        if (!adminEmail) {
-            throw new Error('In the club, No such member with admin\'s email --> ' + boardDto.adminEmail);
-        }
-        return this.boardStore.create(boardDto.toBoard());
+        return this.lycler;
     }
 
-    find(boardId: string): BoardDto {
-        const board = this.boardStore.retrieve(boardId);
-
-        if (!board) {
-            throw new Error('No such board with id --> ' + boardId);
+    createClubService(): ClubService {
+        if (!this.clubService) {
+            this.clubService = new ClubServiceLogic();
         }
-        return BoardDto.fromEntity(board);
+        return this.clubService;
     }
 
-    findByName(boardName: string): BoardDto[] {
-        const boards = this.boardStore.retrieveByName(boardName);
-
-        if (!boards.length) {
-            throw new Error('No such board with name --> ' + boardName)
+    createMemberService(): MemberService {
+        if (!this.memberService) {
+            this.memberService = new MemberServiceLogic();
         }
-        return boards.map(board => BoardDto.fromEntity(board));
+        return this.memberService;
     }
 
-    findAll(): BoardDto[] {
-        const boards = this.boardStore.retrieveAll();
-        return boards.map(board => BoardDto.fromEntity(board));
+    createBoardService(): BoardService {
+        if (!this.boardService) {
+            this.boardService = new BoardServiceLogic();
+        }
+        return this.boardService;
     }
 
-    findByClubName(clubName: string): BoardDto | null {
-        const foundClub = this.clubStore.retrieveByName(clubName);
-
-        if (!foundClub) {
-            throw new Error('No such club with name: ' + clubName);
+    createPostingService(): PostingService {
+        if (!this.postingService) {
+            this.postingService = new PostingServiceLogic();
         }
-
-        const board = this.boardStore.retrieve(foundClub.getId());
-
-        return board ? BoardDto.fromEntity(board) : null;
+        return this.postingService;
     }
 
-    modify(boardDto: BoardDto): void {
-        
-        const boardId = boardDto.clubId;
-        const targetBoard = this.boardStore.retrieve(boardId);
-
-        if (!targetBoard) {
-            throw new Error('No such board with id --> ' + boardDto.clubId);
+    createCommentService(): CommentService {
+        if (!this.commentService) {
+            this.commentService = new CommentServiceLogic();
         }
-
-        if (boardDto.name) {
-            targetBoard.name = boardDto.name;
-        }
-
-        if (boardDto.adminEmail) {
-            targetBoard.adminEmail = boardDto.adminEmail;
-        }
-
-        const foundClub = this.clubStore.retrieve(boardDto.clubId);
-
-        if (!foundClub) {
-            throw new Error('No such club with id --> ' + boardDto.clubId);
-        }
-
-        const membership = foundClub.getMembershipBy(boardDto.adminEmail);
-
-        if (!membership) {
-            throw new Error('In the club, No such member with admin\'s email --> ' + boardDto.adminEmail);
-        }
-
-        this.boardStore.update(targetBoard);
-    }
-
-    remove(boardId: string): void {
-        
-        const foundBoard = this.boardStore.retrieve(boardId);
-
-        if (!foundBoard) {
-            throw new Error('No such board with id --> ' + boardId);
-        }
-        this.boardStore.delete(boardId);
+        return this.commentService;
     }
 }
 
 
-export default BoardServiceLogic;
+export default ServiceLogicLycler;
